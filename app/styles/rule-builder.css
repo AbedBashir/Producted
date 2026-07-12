@@ -1,0 +1,739 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+.rb-canvas {
+  --rb-canvas: #0b1220;
+  --rb-grid: rgba(255, 255, 255, 0.05);
+  --rb-card: #f7f8fa;
+  --rb-card-ink: #12182b;
+  --rb-muted: #7c8aa5;
+  --rb-muted-dark: #a9b4c7;
+  --rb-trace: #ff8a3d;
+  --rb-trace-dim: rgba(255, 138, 61, 0.35);
+  --rb-signal: #4fe8c8;
+  --rb-danger: #ff6b6b;
+  --rb-border: #e2e5ea;
+
+  background-color: var(--rb-canvas);
+  background-image: linear-gradient(var(--rb-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rb-grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  min-height: 100vh;
+  padding: 40px 32px 120px;
+  font-family: "IBM Plex Sans", -apple-system, sans-serif;
+  color: var(--rb-card-ink);
+  box-sizing: border-box;
+}
+
+.rb-canvas *,
+.rb-canvas *::before,
+.rb-canvas *::after {
+  box-sizing: border-box;
+}
+
+.rb-header {
+  max-width: 1100px;
+  margin: 0 auto 40px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rb-header h1 {
+  color: #f7f8fa;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+
+.rb-header p {
+  color: var(--rb-muted-dark);
+  margin: 0;
+  font-size: 14px;
+}
+
+.rb-eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rb-trace);
+  border: 1px solid var(--rb-trace-dim);
+  padding: 5px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.rb-flow {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 96px 1fr;
+  align-items: start;
+  gap: 0;
+}
+
+@media (max-width: 860px) {
+  .rb-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .rb-connector {
+    height: 64px;
+    width: 100%;
+  }
+
+  .rb-connector svg {
+    transform: rotate(90deg);
+  }
+}
+
+.rb-node {
+  background: var(--rb-card);
+  border-radius: 12px;
+  border: 1px solid var(--rb-border);
+  box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.rb-node-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rb-card);
+  background: var(--rb-card-ink);
+  padding: 10px 20px;
+}
+
+.rb-node-body {
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rb-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rb-muted);
+}
+
+.rb-select,
+.rb-input {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  border: 1.5px solid var(--rb-border);
+  background: #fff;
+  color: var(--rb-card-ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.rb-select:focus,
+.rb-input:focus {
+  border-color: var(--rb-trace);
+  box-shadow: 0 0 0 3px var(--rb-trace-dim);
+}
+
+.rb-input-currency {
+  position: relative;
+}
+
+.rb-input-currency::before {
+  content: "$";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--rb-muted);
+  font-family: "IBM Plex Mono", monospace;
+  pointer-events: none;
+}
+
+.rb-input-currency input {
+  padding-left: 26px;
+}
+
+.rb-row {
+  display: flex;
+  gap: 12px;
+}
+
+.rb-row>* {
+  flex: 1;
+}
+
+.rb-divider {
+  height: 1px;
+  background: var(--rb-border);
+  margin: 4px 0;
+}
+
+.rb-conditions-empty {
+  font-size: 13px;
+  color: var(--rb-muted);
+  font-style: italic;
+}
+
+.rb-condition-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fbfbfc;
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.rb-condition-chip select,
+.rb-condition-chip input {
+  font-size: 13px;
+  padding: 7px 9px;
+}
+
+.rb-chip-remove {
+  background: none;
+  border: none;
+  color: var(--rb-muted);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 5px;
+}
+
+.rb-chip-remove:hover {
+  background: #fdeceb;
+  color: var(--rb-danger);
+}
+
+.rb-btn-ghost {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--rb-trace);
+  background: transparent;
+  border: 1.5px dashed var(--rb-trace-dim);
+  border-radius: 7px;
+  padding: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.rb-btn-ghost:hover {
+  border-color: var(--rb-trace);
+  background: rgba(255, 138, 61, 0.06);
+}
+
+.rb-select-products-btn {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--rb-card-ink);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 12px 16px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s ease;
+}
+
+.rb-select-products-btn:hover {
+  background: #232c47;
+}
+
+.rb-selection-summary {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0d7d6f;
+  background: rgba(79, 232, 200, 0.14);
+  border: 1px solid rgba(13, 125, 111, 0.3);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rb-selection-summary.rb-selection-empty {
+  color: var(--rb-muted);
+  background: #f1f2f5;
+  border: 1px solid var(--rb-border);
+}
+
+.rb-signal-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rb-signal);
+  box-shadow: 0 0 8px var(--rb-signal);
+  flex-shrink: 0;
+}
+
+.rb-selection-empty .rb-signal-dot {
+  background: var(--rb-muted);
+  box-shadow: none;
+}
+
+.rb-connector {
+  height: 100%;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.rb-connector svg {
+  overflow: visible;
+}
+
+.rb-trace-line {
+  stroke: var(--rb-trace-dim);
+  stroke-width: 2;
+}
+
+.rb-trace-line-animated {
+  stroke: var(--rb-trace);
+  stroke-width: 2;
+  stroke-dasharray: 6 6;
+  animation: rb-march 1s linear infinite;
+}
+
+@keyframes rb-march {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+.rb-pulse {
+  fill: var(--rb-signal);
+  filter: drop-shadow(0 0 4px var(--rb-signal));
+  offset-path: path("M0,0 L96,0");
+  animation: rb-pulse-travel 2.4s ease-in-out infinite;
+}
+
+@keyframes rb-pulse-travel {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .rb-trace-line-animated,
+  .rb-pulse {
+    animation: none;
+  }
+}
+
+.rb-preview-bar {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--rb-card-ink);
+  border-radius: 12px;
+  padding: 18px 24px;
+  flex-wrap: wrap;
+}
+
+.rb-preview-bar-text {
+  color: var(--rb-muted-dark);
+  font-size: 13px;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.rb-preview-btn {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  background: var(--rb-trace);
+  color: #1a0f00;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 24px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 8px 20px -8px rgba(255, 138, 61, 0.6);
+}
+
+.rb-preview-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -8px rgba(255, 138, 61, 0.7);
+}
+
+.rb-preview-btn:disabled {
+  background: #3a4258;
+  color: var(--rb-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Equal-height columns */
+.rb-flow {
+  align-items: stretch;
+  /* was: align-items: start */
+}
+
+.rb-node {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.rb-node-body {
+  flex: 1;
+}
+
+/* Product preview list */
+.rb-product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.rb-product-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--rb-card-ink);
+  background: #fff;
+  border: 1px solid var(--rb-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.rb-product-row.rb-product-ghost {
+  opacity: 0.35;
+}
+
+.rb-product-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #e7e9ee;
+}
+
+.rb-product-thumb-placeholder {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #e7e9ee, #d3d7e0);
+}
+
+.rb-product-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rb-product-more {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  color: var(--rb-trace);
+  padding: 6px 8px 0;
+  font-weight: 600;
+}
+
+.rb-target-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.rb-target-actions .rb-select-products-btn {
+  flex: 1;
+  width: auto;
+}
+
+.rb-clear-btn {
+  flex: 1;
+  background: transparent;
+  border: 1.5px solid var(--rb-danger);
+  color: var(--rb-danger);
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: "IBM Plex Sans", sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s ease;
+}
+
+.rb-clear-btn:hover {
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.rb-locked-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.rb-crown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #ffb85c, var(--rb-trace));
+  color: #3a1f00;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rb-locked-text {
+  font-size: 13.5px;
+  color: var(--rb-card-ink);
+  flex: 1;
+}
+
+.rb-upgrade-link {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--rb-trace);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rb-increment-mode {
+  display: flex;
+  gap: 6px;
+  margin-top: -4px;
+}
+
+.rb-increment-mode button {
+  flex: 1;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--rb-border);
+  background: #fff;
+  color: var(--rb-muted);
+  cursor: pointer;
+}
+
+.rb-increment-mode button.active {
+  background: var(--rb-card-ink);
+  color: #fff;
+  border-color: var(--rb-card-ink);
+}
+
+.rb-toggle-info {
+  font-size: 13px;
+  color: var(--rb-muted);
+  font-style: italic;
+  background: #fbfbfc;
+  border: 1px solid var(--rb-border);
+  border-radius: 7px;
+  padding: 10px;
+}
+
+/* Fix condition chip overflow inside narrow automation cards */
+.rb-condition-chip {
+  flex-wrap: wrap;
+}
+
+.rb-condition-chip select,
+.rb-condition-chip input {
+  flex: 1 1 90px;
+  min-width: 70px;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.rb-condition-chip .rb-chip-remove {
+  flex: 0 0 auto;
+}
+
+/* Multi-step rule blocks inside Automation builder */
+.rb-rule-step {
+  position: relative;
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 14px 36px 14px 12px;
+  margin-bottom: 10px;
+  background: #fbfbfc;
+}
+
+.rb-rule-step-delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(255, 107, 107, 0.12);
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  color: #d9463f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.rb-rule-step-delete:hover {
+  background: rgba(255, 107, 107, 0.22);
+}
+
+.rb-rule-step-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+  margin-bottom: 8px;
+}
+
+.rb-condition-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  background: #fbfbfc;
+}
+
+.rb-condition-stack select,
+.rb-condition-stack input {
+  width: 100%;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--rb-border);
+  background: #fff;
+}
+
+.rb-condition-stack .rb-chip-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+.rb-cancel-btn {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  background: #fff;
+  color: var(--rb-card-ink, #12182b);
+  border: 1.5px solid var(--rb-border, #e2e5ea);
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+}
+
+.rb-cancel-btn:hover {
+  border-color: var(--rb-card-ink, #12182b);
+}
+
+.rb-test-result {
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid var(--rb-border);
+  padding: 14px 16px;
+}
+
+.rb-test-result-header {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  color: var(--rb-muted);
+  margin-bottom: 10px;
+}
+
+.rb-test-condition-fail {
+  background: rgba(255, 138, 61, 0.08);
+  border: 1px solid var(--rb-trace-dim);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #b3591e;
+}
+
+.rb-test-step-row {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rb-border);
+  font-size: 13px;
+  align-items: center;
+}
+
+.rb-test-step-row:last-child {
+  border-bottom: none;
+}
+
+.rb-test-step-field {
+  flex: 1;
+  font-weight: 600;
+  color: var(--rb-card-ink);
+}
+
+.rb-test-step-before {
+  color: var(--rb-muted);
+  text-decoration: line-through;
+}
+
+.rb-test-step-after {
+  color: #0d7d6f;
+  font-weight: 600;
+}
+
+.rb-test-step-nochange {
+  color: var(--rb-muted);
+  font-style: italic;
+  font-size: 12px;
+}

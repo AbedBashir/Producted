@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
+// enough when changing adapters.
+// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.sqlite"
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+}
+model AppSettings {
+  id        String   @id @default(cuid())
+  shop      String   @unique
+  plan      String   @default("free")
+  automationsPaused Boolean @default(false)
+  weeklyDigestEnabled Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CreditLog {
+  id        String   @id @default(cuid())
+  shop      String
+  amount    Int      // negative = spent, positive = granted/reset
+  reason    String   // "edit_execution" | "monthly_reset" | "plan_upgrade"
+  createdAt DateTime @default(now())
+
+  @@index([shop])
+}
+
+model RuleTemplate {
+  id          String   @id @default(cuid())
+  shop        String
+  name        String
+  description String?
+  ruleChain   String   // JSON: [{ field, action, value, conditions[] }]
+  targetType  String   // "products" | "collections"
+  targetIds   String   // JSON array of GIDs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastRunAt   DateTime?
+
+  scheduledRuns ScheduledRun[]
+
+  @@index([shop])
+}
+
+model ScheduledRun {
+  id          String   @id @default(cuid())
+  shop        String
+  templateId  String
+  template    RuleTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  cronExpr    String   // e.g. "0 9 * * 1" (every Monday 9am)
+  active      Boolean  @default(true)
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([shop])
+}
+
+model EditHistory {
+  id           String   @id @default(cuid())
+  shop         String
+  ruleChain    String   // JSON snapshot of what was run
+  targetType   String
+  targetCount  Int
+  status       String   // "preview" | "completed" | "failed" | "reverted"
+  beforeState  String   // JSON: [{ id, field, oldValue }]
+  afterState   String   // JSON: [{ id, field, newValue }]
+  createdAt    DateTime @default(now())
+  revertedAt   DateTime?
+
+  @@index([shop])
+}
+
+model Automation {
+  id            String    @id @default(cuid())
+  shop          String
+  name          String
+  triggerEvent  String    // "created" | "updated"
+  ruleChain     String    // JSON: { field, action, value, findValue, incrementMode }
+  conditions    String    // JSON: RuleCondition[]
+  active        Boolean   @default(true)
+  paused        Boolean   @default(false)
+  pausedReason  String?
+  runCount      Int       @default(0)
+  lastRunAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([shop])
+}
