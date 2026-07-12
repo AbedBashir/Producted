@@ -38,6 +38,7 @@ model AppSettings {
   plan      String   @default("free")
   automationsPaused Boolean @default(false)
   weeklyDigestEnabled Boolean @default(true)
+  onboardingCompleted Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -86,12 +87,13 @@ model ScheduledRun {
 model EditHistory {
   id           String   @id @default(cuid())
   shop         String
-  ruleChain    String   // JSON snapshot of what was run
+  ruleChain    String
   targetType   String
   targetCount  Int
-  status       String   // "preview" | "completed" | "failed" | "reverted"
-  beforeState  String   // JSON: [{ id, field, oldValue }]
-  afterState   String   // JSON: [{ id, field, newValue }]
+  status       String
+  beforeState  String
+  afterState   String
+  runByName    String?
   createdAt    DateTime @default(now())
   revertedAt   DateTime?
 

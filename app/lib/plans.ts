@@ -23,6 +23,8 @@ export const TEMPLATE_LIMITS: Record<PlanKey, number> = {
 
 export const PLAN_ORDER: PlanKey[] = ["free", "starter", "pro", "advanced"];
 
+export const CSV_MIN_PLAN: PlanKey = "pro";
+
 export function planMeetsMinimum(current: PlanKey, min: PlanKey): boolean {
   return PLAN_ORDER.indexOf(current) >= PLAN_ORDER.indexOf(min);
 }

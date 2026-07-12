@@ -37,6 +37,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 interface PlanFeature {
   label: string;
   included: PlanKey[];
+  comingSoon?: boolean; // shown as a muted "soon" marker instead of ✓/✕ on every tier
 }
 
 const ALL_FEATURES: PlanFeature[] = [
@@ -58,6 +59,10 @@ const ALL_FEATURES: PlanFeature[] = [
     included: ["free", "starter", "pro", "advanced"],
   },
   {
+    label: "Run attribution (who ran it)",
+    included: ["free", "starter", "pro", "advanced"],
+  },
+  {
     label: "Analytics dashboard",
     included: ["free", "starter", "pro", "advanced"],
   },
@@ -65,8 +70,10 @@ const ALL_FEATURES: PlanFeature[] = [
   { label: "Conditions", included: ["starter", "pro", "advanced"] },
   { label: "SKU / Barcode / Weight", included: ["pro", "advanced"] },
   { label: "Automation", included: ["pro", "advanced"] },
+  { label: "CSV import / export", included: ["pro", "advanced"] },
   { label: "Scheduled runs", included: ["advanced"] },
   { label: "Priority support", included: ["advanced"] },
+  { label: "Multi-store", included: [], comingSoon: true },
 ];
 
 const PLANS: {
@@ -206,6 +213,21 @@ export default function Plans() {
 
                   <div>
                     {ALL_FEATURES.map((f) => {
+                      if (f.comingSoon) {
+                        return (
+                          <div className="ps-plan-feature-row" key={f.label}>
+                            <span
+                              className="ps-plan-feature-x"
+                              style={{ color: "var(--ps-muted)" }}
+                            >
+                              ◔
+                            </span>
+                            <span className="ps-plan-feature-label-off">
+                              {f.label} (soon)
+                            </span>
+                          </div>
+                        );
+                      }
                       const included = f.included.includes(plan.key);
                       return (
                         <div className="ps-plan-feature-row" key={f.label}>

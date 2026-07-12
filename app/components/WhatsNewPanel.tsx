@@ -1,20 +1,31 @@
 import { useState } from "react";
 
+// Reflects what's actually shipped in Producted, kept current as features land.
 const CHANGELOG = [
   {
+    date: "Jul 12",
+    title: "Real Shopify Billing",
+    desc: "Upgrade and downgrade plans with real subscriptions — test charges on dev stores, live billing at launch.",
+  },
+  {
+    date: "Jul 11",
+    title: "Automation is live",
+    desc: "Build rules that fire automatically when a product is created or updated, with test-before-saving.",
+  },
+  {
+    date: "Jul 10",
+    title: "AI command bar",
+    desc: "Describe a change in plain English on Home and Producted parses it into a real rule you can run.",
+  },
+  {
     date: "Jul 9",
-    title: "Product browser added",
-    desc: "Search and bulk-select products directly inside Producted.",
+    title: "Catalog health checks",
+    desc: "Home now flags missing titles, descriptions, SEO, images, and metafields across your whole store.",
   },
   {
     date: "Jul 8",
-    title: "Automation builder (preview)",
-    desc: "Trigger → rule → refine, coming to Pro plans.",
-  },
-  {
-    date: "Jul 5",
-    title: "Metafields in the field dropdown",
-    desc: "Your store's real metafield definitions now show up automatically.",
+    title: "History & revert",
+    desc: "Every bulk edit is logged with a real before/after diff — one click undoes it.",
   },
 ];
 

@@ -35,6 +35,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       }));
 
       const isAutomationRun = Array.isArray(ruleChain.rules);
+      const isCsvImport = ruleChain.importedCsv === true;
 
       let ruleLabel: string;
       let fieldLabel: string;
@@ -48,6 +49,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         fieldLabel = ruleChain.rules
           .map((step: any) => step.field?.label ?? "?")
           .join(", ");
+      } else if (isCsvImport) {
+        ruleLabel = `[CSV Import] ${ruleChain.rowCount} row(s) processed`;
+        fieldLabel = "Multiple";
       } else {
         ruleLabel = `${ruleChain.action === "set" ? "Set" : ruleChain.action} ${ruleChain.field?.label ?? ""} to "${ruleChain.value}"`;
         fieldLabel = ruleChain.field?.label ?? "—";
@@ -61,7 +65,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         status: r.status,
         date: r.createdAt.toISOString(),
         diff,
-        revertible: !isAutomationRun && r.status === "completed",
+        revertible:
+          !isAutomationRun && !isCsvImport && r.status === "completed",
+        runByName: r.runByName ?? "Unknown user",
       };
     }),
   };
@@ -126,6 +132,7 @@ export default function History() {
                   <th>Targets</th>
                   <th>Status</th>
                   <th>Date</th>
+                  <th>Run by</th>
                   <th></th>
                 </tr>
               </thead>
@@ -161,6 +168,9 @@ export default function History() {
                         </span>
                       </td>
                       <td>{formatDate(run.date)}</td>
+                      <td style={{ fontSize: 12, color: "#7c8aa5" }}>
+                        {run.runByName}
+                      </td>
                       <td>
                         {run.revertible && (
                           <button
@@ -178,7 +188,7 @@ export default function History() {
                     {expanded === run.id && (
                       <tr key={`${run.id}-diff`}>
                         <td
-                          colSpan={7}
+                          colSpan={8}
                           style={{ background: "#fbfbfc", padding: 0 }}
                         >
                           <div style={{ padding: "16px 20px" }}>

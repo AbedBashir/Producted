@@ -1,7 +1,8 @@
 import { useState } from "react";
-import type { LoaderFunctionArgs } from "react-router";
-import { Link } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { useFetcher, useNavigate } from "react-router";
 import { authenticate } from "../shopify.server";
+import db from "../db.server";
 import "../styles/shared.css";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -9,24 +10,41 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return null;
 };
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const { session } = await authenticate.admin(request);
+  await db.appSettings.upsert({
+    where: { shop: session.shop },
+    update: { onboardingCompleted: true },
+    create: { shop: session.shop, onboardingCompleted: true },
+  });
+  return { success: true };
+};
+
 const STEPS = [
   {
-    title: "Pick a sample product",
-    body: "We'll use one of your real products so you can see exactly how a bulk edit behaves — nothing changes yet.",
+    title: "Chain a rule",
+    body: "Pick a field, an action, and a value on the Rules page — set a price, tag a product, fill in a metafield. It works like a sentence: 'Set Vendor to Nike.'",
   },
   {
-    title: "Run a demo rule",
-    body: "Watch a rule chain from field to target, live, on that one product.",
+    title: "Preview before anything changes",
+    body: "Every rule shows you exactly which products it'll touch and what changes, side by side, before you confirm — nothing runs blind.",
   },
   {
-    title: "See the diff",
-    body: "Before and after, side by side. This is what every real run looks like before you confirm it.",
+    title: "Undo if something's wrong",
+    body: "Every run is logged in History with a real before/after diff. One click reverts it if you change your mind.",
   },
 ];
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
+  const navigate = useNavigate();
+  const completeFetcher = useFetcher();
   const isLast = step === STEPS.length - 1;
+
+  const handleFinish = () => {
+    completeFetcher.submit({}, { method: "POST", action: "/app/onboarding" });
+    navigate("/app/rules");
+  };
 
   return (
     <div
@@ -78,11 +96,13 @@ export default function Onboarding() {
                   Next
                 </button>
               ) : (
-                <Link to="/app/rules" style={{ flex: 1 }}>
-                  <button className="ps-btn-primary" style={{ width: "100%" }}>
-                    Start building
-                  </button>
-                </Link>
+                <button
+                  className="ps-btn-primary"
+                  style={{ flex: 1 }}
+                  onClick={handleFinish}
+                >
+                  Start building
+                </button>
               )}
             </div>
           </div>

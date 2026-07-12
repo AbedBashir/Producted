@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData, useFetcher, Link } from "react-router";
+import { useLoaderData, useFetcher, Link, redirect } from "react-router";
 import { authenticate } from "../shopify.server";
 import { getCreditStatus } from "../lib/credits.server";
 import db from "../db.server";
@@ -9,6 +9,16 @@ import "../styles/shared.css";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
+
+  const appSettings = await db.appSettings.upsert({
+    where: { shop: session.shop },
+    update: {},
+    create: { shop: session.shop },
+  });
+
+  if (!appSettings.onboardingCompleted) {
+    throw redirect("/app/onboarding");
+  }
 
   const [countResponse, credits, recentRuns] = await Promise.all([
     admin.graphql(
@@ -159,18 +169,6 @@ interface ExecuteResult {
 }
 
 export default function Home() {
-  const sliderRef = useRef<HTMLDivElement>(null);
-
-  const scrollSlider = (direction: "left" | "right") => {
-    const el = sliderRef.current;
-    if (!el) return;
-    const cardWidth = 280 + 16; // card width + gap, matches .ps-check-card flex-basis + .ps-slider gap
-    el.scrollBy({
-      left: direction === "left" ? -cardWidth : cardWidth,
-      behavior: "smooth",
-    });
-  };
-
   const {
     totalProducts,
     creditsUsed,
@@ -184,6 +182,17 @@ export default function Home() {
   const [command, setCommand] = useState("");
   const parseFetcher = useFetcher<ParseResult>();
   const executeFetcher = useFetcher<ExecuteResult>();
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  const scrollSlider = (direction: "left" | "right") => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const cardWidth = 280 + 16;
+    el.scrollBy({
+      left: direction === "left" ? -cardWidth : cardWidth,
+      behavior: "smooth",
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -454,6 +463,7 @@ export default function Home() {
             <div className="ps-stat-label">Last rule run</div>
           </div>
         </div>
+
         <div className="ps-slider-header">
           <div className="ps-section-title" style={{ margin: 0 }}>
             Catalog health

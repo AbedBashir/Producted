@@ -112,6 +112,7 @@ export async function evaluateAutomationsForProduct(
     await db.editHistory.create({
       data: {
         shop,
+        runByName: "Automation",
         ruleChain: JSON.stringify({
           rules: ruleSteps,
           conditions,

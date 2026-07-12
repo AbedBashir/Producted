@@ -1,5 +1,6 @@
 import type { ActionFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
+import { getActingUserName } from "../lib/attribution.server";
 import db from "../db.server";
 import { getCreditStatus, spendCredit } from "../lib/credits.server";
 import { planMeetsMinimum } from "../lib/plans";
@@ -168,6 +169,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             : "failed",
       beforeState: JSON.stringify(beforeState),
       afterState: JSON.stringify(afterState),
+      runByName: getActingUserName(session),
     },
   });
 

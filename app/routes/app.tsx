@@ -22,9 +22,11 @@ export default function App() {
         <s-link href="/app/rules">Rules</s-link>
         <s-link href="/app/products">Products</s-link>
         <s-link href="/app/automation">Automation</s-link>
+        <s-link href="/app/import-export">Import/Export</s-link>
         <s-link href="/app/history">History</s-link>
         <s-link href="/app/analytics">Analytics</s-link>
         <s-link href="/app/plans">Plans</s-link>
+        <s-link href="/app/multi-store">Multi-store (Soon)</s-link>
         <s-link href="/app/settings">Settings</s-link>
       </s-app-nav>
       <Outlet />

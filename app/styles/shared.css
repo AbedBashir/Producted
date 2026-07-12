@@ -1149,3 +1149,49 @@
   align-items: center;
   gap: 10px;
 }
+
+.ps-csv-diff-row {
+  border-bottom: 1px solid var(--ps-border, #e2e5ea);
+  padding: 10px 0;
+}
+
+.ps-csv-diff-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.ps-csv-diff-change {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  font-family: "IBM Plex Mono", monospace;
+  padding: 2px 0;
+}
+
+.ps-csv-diff-field {
+  width: 130px;
+  flex-shrink: 0;
+  color: var(--ps-muted);
+}
+
+.ps-csv-diff-before {
+  color: var(--ps-muted);
+  text-decoration: line-through;
+}
+
+.ps-csv-diff-after {
+  color: #0d7d6f;
+}
+
+.ps-csv-error {
+  color: var(--ps-danger);
+  font-size: 12px;
+}
+
+.ps-csv-skip-note {
+  font-size: 12px;
+  color: var(--ps-muted);
+  font-style: italic;
+  margin-top: 10px;
+}
