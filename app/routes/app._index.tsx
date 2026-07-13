@@ -17,7 +17,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 
   if (!appSettings.onboardingCompleted) {
-    throw redirect("/app/onboarding");
+    const search = new URL(request.url).search;
+    throw redirect(`/app/onboarding${search}`);
   }
 
   const [countResponse, credits, recentRuns] = await Promise.all([
