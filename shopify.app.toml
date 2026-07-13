@@ -2,7 +2,7 @@
 
 client_id = "a643294dcd07086b45a8919bb39fb90d"
 name = "Producted"
-application_url = "https://example.com"
+application_url = "https://producted-production.up.railway.app"
 embedded = true
 
 [access_scopes]
@@ -57,7 +57,11 @@ api_version = "2026-10"
   topics = [ "app/scopes_update" ]
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [
+  "https://producted-production.up.railway.app/auth/callback",
+  "https://producted-production.up.railway.app/auth/shopify/callback",
+  "https://producted-production.up.railway.app/api/auth/callback"
+]
 
 [build]
 automatically_update_urls_on_dev = true
