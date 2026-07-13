@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect } from "react-router";
-import { login } from "../../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -9,11 +8,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     throw redirect(`/app?${url.searchParams.toString()}`);
   }
 
-  // No shop context at all — kick off the standard install/login flow,
-  // which itself lands the merchant in /app once authenticated.
-  throw await login(request);
+  return null;
 };
 
 export default function Index() {
-  return null;
+  return (
+    <div
+      style={{
+        fontFamily: "-apple-system, Helvetica, Arial, sans-serif",
+        textAlign: "center",
+        padding: "80px 20px",
+        color: "#1a1f2b",
+      }}
+    >
+      <h1 style={{ fontSize: 24 }}>Producted</h1>
+      <p style={{ color: "#7c8aa5" }}>
+        This app is installed from the Shopify App Store.
+      </p>
+    </div>
+  );
 }
