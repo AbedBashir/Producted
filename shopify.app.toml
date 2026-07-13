@@ -40,7 +40,6 @@ api_version = "2026-10"
   uri = "/webhooks/app/subscriptions_update"
   topics = [ "app_subscriptions/update" ]
 
-  
 [[webhooks.subscriptions]]
   uri = "/webhooks/products/create"
   topics = [ "products/create" ]
@@ -48,6 +47,7 @@ api_version = "2026-10"
   [[webhooks.subscriptions]]
   uri = "/webhooks/products/update"
   topics = [ "products/update" ]
+
   [[webhooks.subscriptions]]
   uri = "/webhooks/app/uninstalled"
   topics = [ "app/uninstalled" ]
@@ -56,17 +56,10 @@ api_version = "2026-10"
   uri = "/webhooks/app/scopes_update"
   topics = [ "app/scopes_update" ]
 
-  [[webhooks.subscriptions]]
-  uri = "/webhooks/customers/data_request"
-  topics = [ "customers/data_request" ]
-
-  [[webhooks.subscriptions]]
-  uri = "/webhooks/customers/redact"
-  topics = [ "customers/redact" ]
-
-  [[webhooks.subscriptions]]
-  uri = "/webhooks/shop/redact"
-  topics = [ "shop/redact" ]
+[webhooks.privacy_compliance]
+customer_deletion_url = "https://producted-production.up.railway.app/webhooks/customers/redact"
+customer_data_request_url = "https://producted-production.up.railway.app/webhooks/customers/data_request"
+shop_deletion_url = "https://producted-production.up.railway.app/webhooks/shop/redact"
 
 [auth]
 redirect_urls = [
