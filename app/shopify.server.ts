@@ -65,4 +65,4 @@ export const sessionStorage = shopify.sessionStorage;
 
 // Test charges are required on dev/test stores — real charges only fire once the app
 // is actually live on a production merchant store. No code change needed at launch.
-export const IS_TEST_CHARGE = process.env.NODE_ENV !== "production";
+export const IS_TEST_CHARGE = true;
