@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs, HeadersFunction } from "react-router";
+import { redirect } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate, IS_TEST_CHARGE } from "../shopify.server";
 import db from "../db.server";
@@ -35,10 +36,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       create: { shop: session.shop, plan: "free" },
     });
 
-    return { success: true };
+    throw redirect(
+      `${origin}/app/plans?downgraded=free&shop=${session.shop}&host=${host}`,
+    );
   }
 
-  if (!isValidPlan(targetPlan) || targetPlan === "free") {
+  if (!isValidPlan(targetPlan)) {
     return { success: false, error: "Invalid plan" };
   }
 

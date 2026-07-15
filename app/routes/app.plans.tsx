@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { useLoaderData, useFetcher, Form } from "react-router";
+import { useLoaderData, Form } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate, IS_TEST_CHARGE } from "../shopify.server";
 import { getCreditStatus } from "../lib/credits.server";
@@ -12,6 +11,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { billing, session } = await authenticate.admin(request);
   const url = new URL(request.url);
   const upgraded = url.searchParams.get("upgraded");
+  const downgraded = url.searchParams.get("downgraded");
   const host = url.searchParams.get("host") ?? "";
 
   if (upgraded && isValidPlan(upgraded) && upgraded !== "free") {
@@ -32,6 +32,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     currentPlan: credits.plan,
     justUpgraded: upgraded && isValidPlan(upgraded) ? upgraded : null,
+    justDowngradedToFree: downgraded === "free",
     isTestCharge: IS_TEST_CHARGE,
     host,
   };
@@ -119,30 +120,28 @@ const PLANS: {
 ];
 
 export default function Plans() {
-  const { currentPlan, justUpgraded, isTestCharge, host } =
-    useLoaderData<typeof loader>();
-  const downgradeFetcher = useFetcher<{ success: boolean }>();
+  const {
+    currentPlan,
+    justUpgraded,
+    justDowngradedToFree,
+    isTestCharge,
+    host,
+  } = useLoaderData<typeof loader>();
 
   const currentIndex = PLAN_ORDER.indexOf(currentPlan as PlanKey);
 
-  const handleDowngrade = (planKey: PlanKey) => {
+  const handleDowngradeSubmit = (
+    e: React.FormEvent<HTMLFormElement>,
+    planKey: PlanKey,
+  ) => {
     if (
       !window.confirm(
         `Switch to the ${planKey === "free" ? "Free" : planKey} plan? This reduces your credits, saved templates, and unlocked features immediately.`,
       )
-    )
-      return;
-    downgradeFetcher.submit(
-      { plan: planKey, host },
-      { method: "POST", action: "/app/billing/upgrade" },
-    );
-  };
-
-  useEffect(() => {
-    if (downgradeFetcher.data?.success) {
-      window.location.reload();
+    ) {
+      e.preventDefault();
     }
-  }, [downgradeFetcher.data]);
+  };
 
   return (
     <div className="ps-canvas">
@@ -164,6 +163,10 @@ export default function Plans() {
             {justUpgraded.charAt(0).toUpperCase() + justUpgraded.slice(1)} plan
             — credits and unlocked features are live immediately.
           </div>
+        )}
+
+        {justDowngradedToFree && (
+          <div className="ps-billing-banner">You're now on the Free plan.</div>
         )}
 
         <div className="ps-grid-4">
@@ -270,15 +273,17 @@ export default function Plans() {
                       </button>
                     </Form>
                   ) : isDowngrade ? (
-                    <button
-                      className="ps-btn-downgrade"
-                      onClick={() => handleDowngrade(plan.key)}
-                      disabled={downgradeFetcher.state === "submitting"}
+                    <Form
+                      method="POST"
+                      action="/app/billing/upgrade"
+                      onSubmit={(e) => handleDowngradeSubmit(e, plan.key)}
                     >
-                      {downgradeFetcher.state === "submitting"
-                        ? "Switching…"
-                        : "Downgrade"}
-                    </button>
+                      <input type="hidden" name="plan" value={plan.key} />
+                      <input type="hidden" name="host" value={host} />
+                      <button type="submit" className="ps-btn-downgrade">
+                        Downgrade
+                      </button>
+                    </Form>
                   ) : null}
                 </div>
               </div>
