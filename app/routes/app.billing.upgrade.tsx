@@ -8,6 +8,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { billing, session } = await authenticate.admin(request);
   const formData = await request.formData();
   const targetPlan = formData.get("plan") as string;
+  const host = (formData.get("host") as string) ?? "";
 
   const url = new URL(request.url);
   const origin = `https://${url.host}`;
@@ -44,7 +45,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return billing.request({
     plan: targetPlan,
     isTest: IS_TEST_CHARGE,
-    returnUrl: `${origin}/app/plans?upgraded=${targetPlan}`,
+    returnUrl: `${origin}/app/plans?upgraded=${targetPlan}&shop=${session.shop}&host=${host}`,
   });
 };
 

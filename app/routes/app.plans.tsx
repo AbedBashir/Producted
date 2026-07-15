@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import type { LoaderFunctionArgs } from "react-router";
+import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useFetcher, Form } from "react-router";
+import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate, IS_TEST_CHARGE } from "../shopify.server";
 import { getCreditStatus } from "../lib/credits.server";
 import { isValidPlan, PLAN_ORDER, type PlanKey } from "../lib/plans";
@@ -11,6 +12,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { billing, session } = await authenticate.admin(request);
   const url = new URL(request.url);
   const upgraded = url.searchParams.get("upgraded");
+  const host = url.searchParams.get("host") ?? "";
 
   if (upgraded && isValidPlan(upgraded) && upgraded !== "free") {
     const { hasActivePayment } = await billing.check({
@@ -31,6 +33,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     currentPlan: credits.plan,
     justUpgraded: upgraded && isValidPlan(upgraded) ? upgraded : null,
     isTestCharge: IS_TEST_CHARGE,
+    host,
   };
 };
 
@@ -116,7 +119,7 @@ const PLANS: {
 ];
 
 export default function Plans() {
-  const { currentPlan, justUpgraded, isTestCharge } =
+  const { currentPlan, justUpgraded, isTestCharge, host } =
     useLoaderData<typeof loader>();
   const downgradeFetcher = useFetcher<{ success: boolean }>();
 
@@ -130,7 +133,7 @@ export default function Plans() {
     )
       return;
     downgradeFetcher.submit(
-      { plan: planKey },
+      { plan: planKey, host },
       { method: "POST", action: "/app/billing/upgrade" },
     );
   };
@@ -261,6 +264,7 @@ export default function Plans() {
                   ) : isUpgrade ? (
                     <Form method="POST" action="/app/billing/upgrade">
                       <input type="hidden" name="plan" value={plan.key} />
+                      <input type="hidden" name="host" value={host} />
                       <button type="submit" className="ps-btn-upgrade">
                         Upgrade
                       </button>
@@ -292,3 +296,7 @@ export default function Plans() {
     </div>
   );
 }
+
+export const headers: HeadersFunction = (headersArgs) => {
+  return boundary.headers(headersArgs);
+};
