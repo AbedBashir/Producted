@@ -9,7 +9,7 @@ generator client {
 // enough when changing adapters.
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -20,7 +20,7 @@ model Session {
   isOnline      Boolean   @default(false)
   scope         String?
   expires       DateTime?
-  accessToken   String
+  accessToken   String    @db.Text
   userId        BigInt?
   firstName     String?
   lastName      String?
@@ -29,7 +29,7 @@ model Session {
   locale        String?
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
-  refreshToken        String?
+  refreshToken        String?  @db.Text
   refreshTokenExpires DateTime?
 }
 model AppSettings {
@@ -58,9 +58,9 @@ model RuleTemplate {
   shop        String
   name        String
   description String?
-  ruleChain   String   // JSON: [{ field, action, value, conditions[] }]
+  ruleChain   String   @db.Text // JSON: [{ field, action, value, conditions[] }]
   targetType  String   // "products" | "collections"
-  targetIds   String   // JSON array of GIDs
+  targetIds   String   @db.Text // JSON array of GIDs
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   lastRunAt   DateTime?
@@ -87,12 +87,12 @@ model ScheduledRun {
 model EditHistory {
   id           String   @id @default(cuid())
   shop         String
-  ruleChain    String
+  ruleChain    String   @db.Text
   targetType   String
   targetCount  Int
   status       String
-  beforeState  String
-  afterState   String
+  beforeState  String   @db.Text
+  afterState   String   @db.Text
   runByName    String?
   createdAt    DateTime @default(now())
   revertedAt   DateTime?
@@ -105,8 +105,8 @@ model Automation {
   shop          String
   name          String
   triggerEvent  String    // "created" | "updated"
-  ruleChain     String    // JSON: { field, action, value, findValue, incrementMode }
-  conditions    String    // JSON: RuleCondition[]
+  ruleChain     String    @db.Text // JSON: { field, action, value, findValue, incrementMode }
+  conditions    String    @db.Text // JSON: RuleCondition[]
   active        Boolean   @default(true)
   paused        Boolean   @default(false)
   pausedReason  String?
