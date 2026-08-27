@@ -4,23 +4,26 @@ This app is a Node.js server (React Router 7 + Prisma) that needs Node.js
 hosting with a persistent process — not static file hosting. Follow these
 steps in Hostinger's hPanel to get it running on `producted.invitationsbash.com`.
 
-> Requires a Hostinger plan that includes the **Node.js** app feature
-> (Business/Cloud web hosting or higher). If your current plan doesn't show
-> "Node.js" under Websites → Advanced, you'll need to upgrade first.
+> Requires a Hostinger plan with the **Node.js app** feature (this repo was
+> confirmed working on an **Unlimited Web Hosting** plan — same tier already
+> running another Node app on this account). Each Node.js site in hPanel gets
+> its own **Websites → [site]** panel with **Deployments**, **Environment
+> variables**, **Runtime logs**, **Databases**, and **Advanced → SSH Access**
+> sections in the left sidebar.
 
-## 1. Point the subdomain at Hostinger
+## 1. Create the website in hPanel
 
-1. In hPanel, go to **Domains → invitationsbash.com** (or **Subdomains**
-   if `invitationsbash.com` is managed elsewhere in Hostinger) and create the
-   subdomain `producted.invitationsbash.com`.
-2. If `invitationsbash.com`'s DNS is *not* on Hostinger, add an `A` record for
-   `producted` pointing at your Hostinger hosting IP (or a `CNAME` if
-   Hostinger gives you one) at wherever `invitationsbash.com`'s DNS is hosted.
-3. Wait for DNS to propagate (usually minutes, can take up to a few hours).
+1. hPanel → **Websites → Add website**, using the domain/subdomain
+   `producted.invitationsbash.com` (create the subdomain first under
+   **Domains** if `invitationsbash.com` is on Hostinger's DNS, or add an `A`/`CNAME`
+   record for `producted` wherever `invitationsbash.com`'s DNS is hosted if not).
+2. When prompted for the site type/stack, choose **Node.js**.
+3. Wait for DNS to propagate (usually minutes, can take up to a few hours) —
+   you can proceed with the rest of setup while it does.
 
 ## 2. Create the MySQL database
 
-1. hPanel → **Databases → MySQL Databases**.
+1. In the new site's panel → **Databases**.
 2. Create a new database (e.g. `producted_db`) and a user with full
    privileges on it. Note the database name, username, password, and host
    (usually `localhost` from within Hostinger, but check the panel — some
@@ -32,27 +35,29 @@ steps in Hostinger's hPanel to get it running on `producted.invitationsbash.com`
 
 ## 3. Get the code onto Hostinger
 
-Two options:
-
-**Option A — Git deploy (recommended):** hPanel → **Advanced → Git**. Point
-it at this repository and branch (`claude/hostinger-deployment-setup-q2t9ha`,
-or `main` once merged), set the deploy path to the subdomain's document
-root, and enable auto-deploy on push if you want it to redeploy
-automatically.
+**Option A — Git deploy (recommended):** in the site's panel → **Deployments**.
+Point it at this repository and branch (`claude/shopify-app-hosting-0xkh9u`,
+or `main` once merged) and deploy. Enable auto-deploy on push if you want it
+to redeploy automatically on future commits.
 
 **Option B — Manual upload:** zip the repo (excluding `node_modules` and
-`.git`) and upload/extract it via **File Manager** into the subdomain's
-directory.
+`.git`) and upload/extract it via **File Manager** into the site's directory.
+
+**Option C — SSH:** use **Advanced → SSH Access** (shown in the site's
+sidebar — same as your `finance.abedbashir.com` site) to `git clone` the repo
+directly on the server.
 
 ## 4. Configure the Node.js app
 
-hPanel → **Websites → producted.invitationsbash.com → Advanced → Node.js**:
+In the site's panel (wherever hPanel surfaces the Node.js app config — it may
+be its own dashboard tab, or under **Advanced**):
 
 - **Node.js version:** 20.x or 22.x (matches `engines` in `package.json`)
 - **Application root:** the folder you deployed the code into
 - **Application URL:** `producted.invitationsbash.com`
-- **Application startup file:** `build/server/index.js`
-- **Environment variables** — add each of these (see `.env.example`):
+- **Application startup file:** `server.js`
+- **Environment variables** (site panel → **Environment variables**, see
+  `.env.example`):
   - `SHOPIFY_API_KEY` — from Shopify Partner Dashboard
   - `SHOPIFY_API_SECRET` — from Shopify Partner Dashboard
   - `SCOPES` = `write_products,write_metaobjects,write_metaobject_definitions`
@@ -62,8 +67,8 @@ hPanel → **Websites → producted.invitationsbash.com → Advanced → Node.js
 
 ## 5. Install, build, and run migrations
 
-Using the **NPM install** button in the Node.js app panel (or its "Run
-command" / terminal feature if available), run in the app's root:
+Via **Advanced → SSH Access**, connect (`ssh -p <port> <user>@<ip>`, shown on
+that page) and, from the app's root on the server:
 
 ```bash
 npm ci
@@ -71,12 +76,12 @@ npx prisma migrate deploy
 npm run build
 ```
 
-Then start (or restart) the app from the Node.js panel — it runs
-`npm run start`, which serves `build/server/index.js`.
+Then (re)start the app from wherever the Node.js panel's start/restart
+control is. It runs `npm run start`, i.e. `node server.js`, which serves
+`build/server/index.js` on `process.env.PORT`.
 
-If the panel doesn't expose a terminal, use **hPanel → Advanced → SSH
-Access** (available on most Business/Cloud plans) to run the same three
-commands manually.
+If the panel exposes an "NPM install" / "Run command" button instead of (or
+in addition to) SSH, that works too — same three commands.
 
 ## 6. Enable SSL
 
@@ -104,7 +109,7 @@ in `shopify.app.toml`.
 - Visit `https://producted.invitationsbash.com` — should not show a raw error page.
 - Install the app on a dev store and confirm OAuth completes (redirects
   back to the app without errors).
-- Check the Node.js app's logs (hPanel panel or `npm run start` console) for
+- Check **Runtime logs** in the site's hPanel (or the SSH console) for
   Prisma connection errors if anything fails — almost always a bad
   `DATABASE_URL` or migrations not having been run.
 
