@@ -2,7 +2,7 @@
 
 client_id = "a643294dcd07086b45a8919bb39fb90d"
 name = "Producted"
-application_url = "https://producted.bashfusion.com"
+application_url = "https://producted.invitationsbash.com"
 embedded = true
 
 [access_scopes]
@@ -57,15 +57,15 @@ api_version = "2026-10"
   topics = [ "app/scopes_update" ]
 
 [webhooks.privacy_compliance]
-customer_deletion_url = "https://producted.bashfusion.com/webhooks/customers/redact"
-customer_data_request_url = "https://producted.bashfusion.com/webhooks/customers/data_request"
-shop_deletion_url = "https://producted.bashfusion.com/webhooks/shop/redact"
+customer_deletion_url = "https://producted.invitationsbash.com/webhooks/customers/redact"
+customer_data_request_url = "https://producted.invitationsbash.com/webhooks/customers/data_request"
+shop_deletion_url = "https://producted.invitationsbash.com/webhooks/shop/redact"
 
 [auth]
 redirect_urls = [
-  "https://producted.bashfusion.com/auth/callback",
-  "https://producted.bashfusion.com/auth/shopify/callback",
-  "https://producted.bashfusion.com/api/auth/callback"
+  "https://producted.invitationsbash.com/auth/callback",
+  "https://producted.invitationsbash.com/auth/shopify/callback",
+  "https://producted.invitationsbash.com/api/auth/callback"
 ]
 
 [build]

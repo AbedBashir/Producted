@@ -2,7 +2,7 @@
 
 This app is a Node.js server (React Router 7 + Prisma) that needs Node.js
 hosting with a persistent process — not static file hosting. Follow these
-steps in Hostinger's hPanel to get it running on `producted.bashfusion.com`.
+steps in Hostinger's hPanel to get it running on `producted.invitationsbash.com`.
 
 > Requires a Hostinger plan that includes the **Node.js** app feature
 > (Business/Cloud web hosting or higher). If your current plan doesn't show
@@ -10,12 +10,12 @@ steps in Hostinger's hPanel to get it running on `producted.bashfusion.com`.
 
 ## 1. Point the subdomain at Hostinger
 
-1. In hPanel, go to **Domains → producted.bashfusion.com** (or **Subdomains**
-   if `bashfusion.com` is managed elsewhere in Hostinger) and create the
-   subdomain `producted.bashfusion.com`.
-2. If `bashfusion.com`'s DNS is *not* on Hostinger, add an `A` record for
+1. In hPanel, go to **Domains → invitationsbash.com** (or **Subdomains**
+   if `invitationsbash.com` is managed elsewhere in Hostinger) and create the
+   subdomain `producted.invitationsbash.com`.
+2. If `invitationsbash.com`'s DNS is *not* on Hostinger, add an `A` record for
    `producted` pointing at your Hostinger hosting IP (or a `CNAME` if
-   Hostinger gives you one) at wherever `bashfusion.com`'s DNS is hosted.
+   Hostinger gives you one) at wherever `invitationsbash.com`'s DNS is hosted.
 3. Wait for DNS to propagate (usually minutes, can take up to a few hours).
 
 ## 2. Create the MySQL database
@@ -46,17 +46,17 @@ directory.
 
 ## 4. Configure the Node.js app
 
-hPanel → **Websites → producted.bashfusion.com → Advanced → Node.js**:
+hPanel → **Websites → producted.invitationsbash.com → Advanced → Node.js**:
 
 - **Node.js version:** 20.x or 22.x (matches `engines` in `package.json`)
 - **Application root:** the folder you deployed the code into
-- **Application URL:** `producted.bashfusion.com`
+- **Application URL:** `producted.invitationsbash.com`
 - **Application startup file:** `build/server/index.js`
 - **Environment variables** — add each of these (see `.env.example`):
   - `SHOPIFY_API_KEY` — from Shopify Partner Dashboard
   - `SHOPIFY_API_SECRET` — from Shopify Partner Dashboard
   - `SCOPES` = `write_products,write_metaobjects,write_metaobject_definitions`
-  - `SHOPIFY_APP_URL` = `https://producted.bashfusion.com`
+  - `SHOPIFY_APP_URL` = `https://producted.invitationsbash.com`
   - `DATABASE_URL` = the MySQL connection string from step 2
   - `NODE_ENV` = `production`
 
@@ -81,13 +81,13 @@ commands manually.
 ## 6. Enable SSL
 
 hPanel → **Security → SSL** → issue a free SSL certificate for
-`producted.bashfusion.com` (Let's Encrypt, usually automatic once DNS
+`producted.invitationsbash.com` (Let's Encrypt, usually automatic once DNS
 resolves). Shopify requires HTTPS for embedded apps — the app will not load
 without it.
 
 ## 7. Point Shopify at the new URL
 
-This repo's `shopify.app.toml` already targets `https://producted.bashfusion.com`.
+This repo's `shopify.app.toml` already targets `https://producted.invitationsbash.com`.
 In the Shopify Partner Dashboard (or via `shopify app deploy` if you have the
 CLI authenticated), push this config so Shopify's stored `application_url`
 and OAuth `redirect_urls` match:
@@ -101,7 +101,7 @@ in `shopify.app.toml`.
 
 ## 8. Smoke test
 
-- Visit `https://producted.bashfusion.com` — should not show a raw error page.
+- Visit `https://producted.invitationsbash.com` — should not show a raw error page.
 - Install the app on a dev store and confirm OAuth completes (redirects
   back to the app without errors).
 - Check the Node.js app's logs (hPanel panel or `npm run start` console) for
